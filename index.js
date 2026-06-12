@@ -32,6 +32,24 @@ async function run() {
     const jobsCullection = db.collection("jobs");
 
 
+app.get('/jobs',async (req,res)=>{
+
+  const query = {}
+
+  if(req.query.companyId){
+    query.companyId = req.query.companyId
+  }
+  if(req.query.status){
+    query.status = req.query.status
+  }
+
+  const cursor = jobsCullection.find(query)
+  const result = await cursor.toArray()
+  res.send(result)
+
+})
+
+
 app.post("/jobs",async (req,res)=>{
     const jobData = req.body
     const result = await jobsCullection.insertOne(jobData)
