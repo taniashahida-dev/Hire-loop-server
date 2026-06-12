@@ -29,10 +29,14 @@ async function run() {
   try {
   
      const db = client.db("hire-loop-cullection");
-    const postCullection = db.collection("jobs");
+    const jobsCullection = db.collection("jobs");
 
 
-
+app.post("/jobs",async (req,res)=>{
+    const jobData = req.body
+    const result = await jobsCullection.insertOne(jobData)
+    res.send(result)
+})
    
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
