@@ -33,6 +33,30 @@ async function run() {
     const companiesCollection = db.collection("companies");
 
 
+ const usersCollection = database.collection("user");
+
+        app.get('/user', async (req, res) => {
+            
+            const cursor = usersCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+app.get('/jobs/:id',async (req,res)=>{
+
+  const {id}= req.params
+const  query = {
+        _id: new ObjectId(id)
+  }
+
+  const result = jobsCollection.findOne(query)
+
+  res.send(result)
+
+})
+
+
+
 app.get('/jobs',async (req,res)=>{
 
   const query = {}
@@ -53,7 +77,12 @@ app.get('/jobs',async (req,res)=>{
 
 app.post("/jobs",async (req,res)=>{
     const jobData = req.body
-    const result = await jobsCollection.insertOne(jobData)
+const newJob = {
+  ...jobData ,
+  createdAt : new Date()
+}
+
+    const result = await jobsCollection.insertOne(newJob)
      console.log("RESULT:", result);
     res.send(result)
 })
@@ -68,13 +97,19 @@ app.get('/companies',async (req,res)=>{
     query.recruiterId = req.query.recruiterId
   }
  const result = await companiesCollection.findOne(query);
-
-  res.send(result)
+  console.log("Result:", result);
+  res.send(result ||  {})
 
 })
 
 app.post("/companies",async (req,res)=>{
     const companiesData = req.body
+
+
+    const newCompany = {
+      ...companiesData,
+      createdAt: new Date()
+    }
     const result = await companiesCollection.insertOne(companiesData)
     res.send(result)
 })
