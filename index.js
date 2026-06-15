@@ -29,7 +29,8 @@ async function run() {
   try {
   
      const db = client.db("hire-loop-cullection");
-    const jobsCullection = db.collection("jobs");
+    const jobsCollection = db.collection("jobs");
+    const companiesCollection = db.collection("companies");
 
 
 app.get('/jobs',async (req,res)=>{
@@ -43,7 +44,7 @@ app.get('/jobs',async (req,res)=>{
     query.status = req.query.status
   }
 
-  const cursor = jobsCullection.find(query)
+  const cursor = jobsCollection.find(query)
   const result = await cursor.toArray()
   res.send(result)
 
@@ -52,7 +53,29 @@ app.get('/jobs',async (req,res)=>{
 
 app.post("/jobs",async (req,res)=>{
     const jobData = req.body
-    const result = await jobsCullection.insertOne(jobData)
+    const result = await jobsCollection.insertOne(jobData)
+     console.log("RESULT:", result);
+    res.send(result)
+})
+
+
+
+app.get('/companies',async (req,res)=>{
+
+  const query = {}
+
+  if(req.query.recruiterId){
+    query.recruiterId = req.query.recruiterId
+  }
+ const result = await companiesCollection.findOne(query);
+
+  res.send(result)
+
+})
+
+app.post("/companies",async (req,res)=>{
+    const companiesData = req.body
+    const result = await companiesCollection.insertOne(companiesData)
     res.send(result)
 })
    
